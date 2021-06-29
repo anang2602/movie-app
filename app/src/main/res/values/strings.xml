@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">MoviewApp</string>
     <string name="upcoming">Upcoming</string>
+    <string name="search">Search</string>
+    <string name="search_by_genre">Search by genre</string>
+    <string name="popular">Popular</string>
+    <string name="top_rated">Top rated</string>
+    <string name="retry">Retry</string>
+    <string name="all_categories">All categories</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.technicalassigments.moviewapp.data.api
 
+import android.util.Log
 import com.google.gson.GsonBuilder
 import com.technicalassigments.moviewapp.BuildConfig
 import okhttp3.OkHttpClient
@@ -24,7 +25,7 @@ class ApiServiceImpl {
                 .build()
 
             val gson = GsonBuilder().create()
-
+            Log.d("Abnjing", BuildConfig.BASE_URL)
             val retrofit = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))

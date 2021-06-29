@@ -8,7 +8,7 @@ class ApiHelper(private val apiService: ApiService) {
         const val language = "en-US"
     }
 
-    fun getUpcomingMovies(page: Int) =
-        apiService.getUpcomingMovies(BuildConfig.MY_API_KEY, language, page)
+    fun getMoviesGenre() =
+        apiService.getMoviesGenre(BuildConfig.MY_API_KEY, language)
 
 }

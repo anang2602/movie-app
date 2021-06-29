@@ -23,14 +23,16 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "MY_API_KEY", getMyApiKey("ThemovieApiKey"))
-            buildConfigField("String", "BASE_URL", getMyApiKey("ThemovieBaseUrl"))
+            buildConfigField("String", "MY_API_KEY", tmdbApiKey)
+            buildConfigField("String", "BASE_URL", tmdbBaseUrl)
+            buildConfigField("String", "POSTER_URL", tmdbImgUrl)
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField("String", "MY_API_KEY", getMyApiKey("ThemovieApiKey"))
-            buildConfigField("String", "BASE_URL", getMyApiKey("ThemovieBaseUrl"))
+            buildConfigField("String", "MY_API_KEY", tmdbApiKey)
+            buildConfigField("String", "BASE_URL", tmdbBaseUrl)
+            buildConfigField("String", "POSTER_URL", tmdbImgUrl)
         }
     }
     compileOptions {
@@ -65,11 +67,4 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
     implementation 'com.squareup.okhttp3:okhttp:4.2.2'
-}
-
-//return a MY API KEY from a properties file.
-static def getMyApiKey(String property){
-    Properties properties = new Properties()
-    properties.load(new FileInputStream("/Users/user/myapikey"))
-    return "\"" + properties.getProperty(property) +"\""
 }
