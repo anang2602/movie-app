@@ -6,13 +6,12 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="Background">@color/white</color>
-    <color name="Surface">@color/white</color>
-    <color name="Error">#B00020</color>
-    <color name="OnPrimary">@color/white</color>
+    <color name="Background">#121212</color>
+    <color name="Surface">#121212</color>
+    <color name="Error">#CF6679</color>
+    <color name="OnPrimary">@color/black</color>
     <color name="OnSecondary">@color/black</color>
-    <color name="OnBackground">@color/black</color>
-    <color name="OnSurface">@color/black</color>
-    <color name="OnError">@color/white</color>
+    <color name="OnBackground">@color/white</color>
+    <color name="OnSurface">@color/white</color>
+    <color name="OnError">@color/black</color>
 </resources>
