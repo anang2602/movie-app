@@ -1,4 +1,4 @@
-package com.technicalassigments.moviewapp.ui.main.helper
+package com.technicalassigments.moviewapp.ui.main.callback
 
 interface GetSelectedGenre {
 

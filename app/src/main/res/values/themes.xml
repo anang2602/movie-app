@@ -20,5 +20,8 @@
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:navigationBarColor" tools:ignore="NewApi">@color/colortoolbar</item>
+        <item name="android:navigationBarDividerColor" tools:ignore="NewApi">@color/colortoolbar</item>
+        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
     </style>
 </resources>

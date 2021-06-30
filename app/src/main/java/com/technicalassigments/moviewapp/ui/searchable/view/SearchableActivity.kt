@@ -1,10 +1,12 @@
-package com.technicalassigments.moviewapp.ui.main.view
+package com.technicalassigments.moviewapp.ui.searchable.view
 
 import android.app.SearchManager
-import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.provider.SearchRecentSuggestions
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -18,76 +20,49 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.technicalassigments.moviewapp.R
 import com.technicalassigments.moviewapp.data.api.ApiService
 import com.technicalassigments.moviewapp.data.model.GenreResult
-import com.technicalassigments.moviewapp.databinding.ActivityMainBinding
+import com.technicalassigments.moviewapp.databinding.ActivitySearchableBinding
 import com.technicalassigments.moviewapp.ui.base.ViewModelFactory
 import com.technicalassigments.moviewapp.ui.main.adapter.GenreAdapter
-import com.technicalassigments.moviewapp.ui.main.adapter.MovieAdapter
 import com.technicalassigments.moviewapp.ui.main.adapter.MovieLoadStateAdapter
-import com.technicalassigments.moviewapp.ui.main.callback.GetSelectedGenre
 import com.technicalassigments.moviewapp.ui.main.viewmodel.MainViewModel
+import com.technicalassigments.moviewapp.ui.searchable.adapter.SearchAdapter
+import com.technicalassigments.moviewapp.ui.searchable.viewmodel.SearchViewModel
+import com.technicalassigments.moviewapp.utils.RecentSuggestionsProvider
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity(), GetSelectedGenre, View.OnClickListener {
+class SearchableActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var genreAdapter: GenreAdapter
-    private lateinit var mainViewModel: MainViewModel
-    private val movieAdapter = MovieAdapter()
-    private var selectedGenre = ArrayList<Int>()
-    private var moviesJob: Job? = null
+    private lateinit var binding: ActivitySearchableBinding
+    private lateinit var searchViewModel: SearchViewModel
+    private var searchAdapter = SearchAdapter()
+    private var searchJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivitySearchableBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
-        setupUI()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         initViewModel()
+        handleIntent(intent)
         initAdapter()
-        fetchMovies(selectedGenre.joinToString())
-    }
-
-    private fun fetchMovies(genre: String) {
-        moviesJob?.cancel()
-        moviesJob = lifecycleScope.launch {
-            mainViewModel.getMovies(genre).collect {
-                movieAdapter.submitData(it)
-            }
-        }
     }
 
     private fun initAdapter() {
-        binding.rvGenre.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        genreAdapter = GenreAdapter(arrayListOf(), this)
-        binding.rvGenre.adapter = genreAdapter
-        binding.rvGenre.visibility = View.VISIBLE
-        mainViewModel.genreResult.observe(this) { result ->
-            when (result) {
-                is GenreResult.Success -> {
-                    genreAdapter.addGenres(result.data)
-                    genreAdapter.notifyDataSetChanged()
-                }
-                is GenreResult.Error -> {
-                    Toast.makeText(this, result.error.message.toString(), Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-        binding.rvMovies.adapter = movieAdapter.withLoadStateHeaderAndFooter(
-            header = MovieLoadStateAdapter { movieAdapter.retry() },
-            footer = MovieLoadStateAdapter { movieAdapter.retry() }
+
+        binding.rvMovies.adapter = searchAdapter.withLoadStateHeaderAndFooter(
+            header = MovieLoadStateAdapter { searchAdapter.retry() },
+            footer = MovieLoadStateAdapter { searchAdapter.retry() }
         )
-        movieAdapter.addLoadStateListener { loadState ->
+        searchAdapter.addLoadStateListener { loadState ->
             binding.rvMovies.isVisible = loadState.source.refresh is LoadState.NotLoading
             binding.progressBar.isVisible = loadState.source.refresh is LoadState.Loading
             binding.groupError.isVisible = loadState.source.refresh is LoadState.Error
 
             val isListEmpty =
-                loadState.refresh is LoadState.NotLoading && movieAdapter.itemCount == 0
+                loadState.refresh is LoadState.NotLoading && searchAdapter.itemCount == 0
             showEmptyList(isListEmpty)
 
             val errorState = loadState.source.append as? LoadState.Error
@@ -96,6 +71,22 @@ class MainActivity : AppCompatActivity(), GetSelectedGenre, View.OnClickListener
                 ?: loadState.prepend as? LoadState.Error
             errorState?.let {
                 showError(it.error.message.toString())
+            }
+        }
+    }
+
+
+    private fun initViewModel() {
+        searchViewModel = ViewModelProviders.of(
+            this,
+            ViewModelFactory(ApiService.create())
+        ).get(SearchViewModel::class.java)
+    }
+
+    private fun searchMovie(query: String) {
+        searchJob = lifecycleScope.launch {
+            searchViewModel.getMovies(query).collect {
+                searchAdapter.submitData(it)
             }
         }
     }
@@ -124,22 +115,10 @@ class MainActivity : AppCompatActivity(), GetSelectedGenre, View.OnClickListener
         binding.rvMovies.visibility = View.GONE
     }
 
-    private fun initViewModel() {
-        mainViewModel = ViewModelProviders.of(
-            this,
-            ViewModelFactory(ApiService.create())
-        ).get(MainViewModel::class.java)
-    }
-
-    private fun setupUI() {
-        binding.btnRetry.setOnClickListener(this)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.menu_search, menu)
-
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchManager = getSystemService(SEARCH_SERVICE) as SearchManager
         (menu?.findItem(R.id.action_search)?.actionView as SearchView).apply {
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
             queryHint = "Search for movies"
@@ -150,28 +129,30 @@ class MainActivity : AppCompatActivity(), GetSelectedGenre, View.OnClickListener
         return true
     }
 
-    override fun onClick(p0: View) {
-        when (p0.id) {
-            R.id.btn_retry -> {
-                fetchMovies(selectedGenre.joinToString())
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let {
+            handleIntent(it)
+        }
+    }
+
+    private fun handleIntent(intent: Intent) {
+        if (Intent.ACTION_SEARCH == intent.action) {
+            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+                SearchRecentSuggestions(this, RecentSuggestionsProvider.AUTHORITY, RecentSuggestionsProvider.MODE)
+                    .saveRecentQuery(query, null)
+                supportActionBar?.title = query
+                searchMovie(query)
             }
         }
     }
 
-
-    override fun onGetSelectedGenre(selected: Int) {
-        if (selected in selectedGenre) {
-            selectedGenre.remove(selected)
-        } else {
-            selectedGenre.add(selected)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+           android.R.id.home -> {
+               finish()
+           }
         }
-
-        fetchMovies(selectedGenre.joinToString())
-        lifecycleScope.launch {
-            movieAdapter.loadStateFlow
-                .distinctUntilChangedBy { it.refresh }
-                .filter { it.refresh is LoadState.NotLoading }
-                .collect { binding.rvMovies.scrollToPosition(0) }
-        }
+        return super.onOptionsItemSelected(item)
     }
 }

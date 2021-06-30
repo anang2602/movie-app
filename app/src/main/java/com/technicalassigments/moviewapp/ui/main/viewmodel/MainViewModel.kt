@@ -1,43 +1,38 @@
 package com.technicalassigments.moviewapp.ui.main.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.mindorks.framework.mvvm.data.model.GenreResponse
-import com.technicalassigments.moviewapp.data.repository.MainRepository
-import com.technicalassigments.moviewapp.utils.Resource
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
+import androidx.lifecycle.*
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.technicalassigments.moviewapp.data.model.GenreResult
+import com.technicalassigments.moviewapp.data.model.Movie
+import com.technicalassigments.moviewapp.data.repository.GenreRepository
+import com.technicalassigments.moviewapp.data.repository.MoviesRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 
-class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
+class MainViewModel(
+    private val genreRepositori: GenreRepository,
+    private val moviesRepositori: MoviesRepository
+) : ViewModel() {
 
-    private val categories = MutableLiveData<Resource<GenreResponse>>()
-    private val compositeDisposable = CompositeDisposable()
-
-    private fun fetchCategory() {
-        categories.postValue(Resource.loading(null))
-        compositeDisposable.add(
-            mainRepository.getMoviesGenre()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { res ->
-                        categories.postValue(Resource.success(res))
-                    }, {
-                        categories.postValue(Resource.error("Something Went Wrong", null))
-                    }
-                )
-        )
+    val genreResult: LiveData<GenreResult> = liveData {
+        val genres = genreRepositori.getGenreResultStream().asLiveData(Dispatchers.Main)
+        emitSource(genres)
     }
 
-    fun getCategories(): LiveData<Resource<GenreResponse>> {
-        return categories
-    }
+    private var currentGenreValue: String? = null
+    private var currentMovieResult: Flow<PagingData<Movie>>? = null
 
-    override fun onCleared() {
-        super.onCleared()
-        compositeDisposable.dispose()
+    fun getMovies(genre: String): Flow<PagingData<Movie>> {
+        val lastResult = currentMovieResult
+        if (genre == currentGenreValue && lastResult != null) {
+            return lastResult
+        }
+        currentGenreValue = genre
+        val newResult: Flow<PagingData<Movie>> = moviesRepositori.getMoviesResultStream(genre)
+            .cachedIn(viewModelScope)
+        currentMovieResult = newResult
+        return newResult
     }
 
 }
