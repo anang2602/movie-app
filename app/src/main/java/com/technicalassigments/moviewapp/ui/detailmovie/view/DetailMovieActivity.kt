@@ -72,6 +72,12 @@ class DetailMovieActivity : AppCompatActivity() {
             footer = MovieLoadStateAdapter { adapter.retry() }
         )
         adapter.addLoadStateListener { loadState ->
+
+            val isListEmpty =
+                loadState.refresh is LoadState.NotLoading && adapter.itemCount == 0
+
+            binding.tvReviewsEmpty.isVisible = isListEmpty
+
             val errorState = loadState.source.append as? LoadState.Error
                 ?: loadState.source.prepend as? LoadState.Error
                 ?: loadState.append as? LoadState.Error
