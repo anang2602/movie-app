@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.technicalassigments.moviewapp.data.model.Genre
-import com.technicalassigments.moviewapp.databinding.ListKategoriBinding
+import com.technicalassigments.moviewapp.databinding.ListKategoriItemBinding
 import com.technicalassigments.moviewapp.ui.main.callback.GetSelectedGenre
 import com.technicalassigments.moviewapp.ui.main.view.GenreViewHolder
 
@@ -21,7 +21,7 @@ class GenreAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenreViewHolder {
         val binding =
-            ListKategoriBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ListKategoriItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return GenreViewHolder(binding)
     }
 

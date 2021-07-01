@@ -47,7 +47,7 @@
                 android:visibility="visible"
                 android:background="@android:color/transparent"
                 tools:itemCount="3"
-                tools:listitem="@layout/list_kategori"/>
+                tools:listitem="@layout/list_kategori_item"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -58,7 +58,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_height="0dp"
-            tools:listitem="@layout/list_movies"
+            tools:listitem="@layout/list_movies_item"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="3"
             tools:itemCount="3"

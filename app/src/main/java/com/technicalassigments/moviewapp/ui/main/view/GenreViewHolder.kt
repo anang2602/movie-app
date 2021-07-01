@@ -4,10 +4,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.technicalassigments.moviewapp.R
 import com.technicalassigments.moviewapp.data.model.Genre
-import com.technicalassigments.moviewapp.databinding.ListKategoriBinding
+import com.technicalassigments.moviewapp.databinding.ListKategoriItemBinding
 import com.technicalassigments.moviewapp.ui.main.callback.GetSelectedGenre
 
-class GenreViewHolder(private val binding: ListKategoriBinding) :
+class GenreViewHolder(private val binding: ListKategoriItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
     private val selectedGenre = arrayListOf<Int>()
     fun onBind(genre: Genre, onGetSelectedGenre: GetSelectedGenre) {

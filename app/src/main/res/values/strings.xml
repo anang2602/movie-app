@@ -8,4 +8,9 @@
     <string name="retry">Retry</string>
     <string name="all_categories">All categories</string>
     <string name="no_results">No results 😓</string>
+    <string name="overview">Overview</string>
+    <string name="reviews">Reviews</string>
+    <string name="trailer_not_avaiable">Trailer not avaiable</string>
+    <string name="show_more">Show more</string>
+    <string name="show_less">Show less</string>
 </resources>

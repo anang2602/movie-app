@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity(), GetSelectedGenre, View.OnClickListener
                     genreAdapter.notifyDataSetChanged()
                 }
                 is GenreResult.Error -> {
-                    Toast.makeText(this, result.error.message.toString(), Toast.LENGTH_SHORT).show()
+                    showError(result.error.message.toString())
                 }
             }
         }

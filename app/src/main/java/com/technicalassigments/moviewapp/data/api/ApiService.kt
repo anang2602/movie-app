@@ -17,14 +17,7 @@ interface ApiService {
         @Query("api_key") apiKey: String,
         @Query("language") language: String
     ): GenreResponse
-
-    @GET("discover/movie")
-    suspend fun getMovie(
-        @Query("api_key") apiKey: String,
-        @Query("language") language: String,
-        @Query("page") int: Int
-    ): DiscoverMovieResponse
-
+    
     @GET("discover/movie")
     suspend fun getMovieByGenre(
         @Query("api_key") apiKey: String,
@@ -53,7 +46,7 @@ interface ApiService {
         @Path("movie_id") movie_id: Int,
         @Query("api_key") apiKey: String,
         @Query("language") language: String,
-        @Query("Page") page: Int
+        @Query("page") page: Int
     ): ReviewsResponse
 
     companion object {

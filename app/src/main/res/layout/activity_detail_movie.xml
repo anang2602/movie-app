@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/backgroundColor"
+    tools:context=".ui.detailmovie.view.DetailMovieActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="255dp">
+
+                <TextView
+                    android:id="@+id/tv_trailer_empty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/trailer_not_avaiable"
+                    app:layout_constraintStart_toStartOf="@id/videoview"
+                    app:layout_constraintEnd_toEndOf="@id/videoview"
+                    app:layout_constraintTop_toTopOf="@id/videoview"
+                    app:layout_constraintBottom_toBottomOf="@id/videoview"
+                    android:elevation="1dp"
+                    tools:targetApi="lollipop"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    android:textColor="?attr/colorError"/>
+
+                <WebView
+                    android:id="@+id/videoview"
+                    app:layout_constraintTop_toBottomOf="@id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@color/colortoolbar"/>
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:title=" "
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:titleTextColor="?attr/colorOnPrimary"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <ImageView
+            android:id="@+id/iv_poster"
+            android:layout_width="100dp"
+            android:layout_height="150dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appbar"
+            android:layout_marginTop="16dp"
+            tools:src="@drawable/dummy_poster"/>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="?attr/colorOnBackground"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="Dragon ball Z"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            app:layout_constraintTop_toTopOf="@id/iv_poster"
+            app:layout_constraintStart_toEndOf="@id/iv_poster"/>
+
+        <TextView
+            android:id="@+id/tv_release"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_poster"
+            android:layout_width="0dp"
+            android:textSize="16sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_height="wrap_content"
+            tools:text="25 April 2012"
+            android:textColor="?attr/colorOnBackground"/>
+
+        <TextView
+            android:id="@+id/tv_popularity"
+            app:layout_constraintBottom_toBottomOf="@id/iv_poster"
+            app:layout_constraintTop_toTopOf="@id/iv_poster"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_poster"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textSize="16sp"
+            tools:text="Popularity 7.3"
+            android:textColor="?attr/colorOnBackground"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tv_vote"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_popularity"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_poster"
+            android:textColor="?attr/colorOnBackground"
+            tools:text="Vote average 7.3 \t vote count 8503"/>
+
+        <TextView
+            android:id="@+id/overview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/overview"
+            android:textSize="24sp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_poster"
+            android:textColor="?attr/colorOnBackground"/>
+
+        <TextView
+            android:id="@+id/tv_overview"
+            android:layout_margin="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="16sp"
+            android:textAlignment="textStart"
+            tools:text="When an unexpected enemy emerges and threatens global safety and security, Nick Fury, director of the international peacekeeping agency known as S.H.I.E.L.D., finds himself in need of a team to pull the world back from the brink of disaster. Spanning the globe, a daring recruitment effort begins!"
+            app:layout_constraintTop_toBottomOf="@id/overview"/>
+
+        <TextView
+            android:id="@+id/reviews"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/reviews"
+            android:textSize="24sp"
+            android:layout_marginTop="16dp"
+            android:textColor="?attr/colorOnBackground"
+            app:layout_constraintTop_toBottomOf="@id/tv_overview"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_reviews"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/reviews"
+            tools:listitem="@layout/list_reviews_item"
+            tools:itemCount="3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
