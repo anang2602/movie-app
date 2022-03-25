@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity(), GetSelectedGenre, View.OnClickListener
     private var selectedGenre = ArrayList<Int>()
     private var moviesJob: Job? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
