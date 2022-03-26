@@ -11,12 +11,6 @@ import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 interface ApiService {
-
-    @GET("genre/movie/list")
-    suspend fun getMoviesGenre(
-        @Query("api_key") apiKey: String,
-        @Query("language") language: String
-    ): GenreResponse
     
     @GET("discover/movie")
     suspend fun getMovieByGenre(
