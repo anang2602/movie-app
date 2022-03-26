@@ -1,0 +1,66 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'kotlin-android'
+}
+
+android {
+    compileSdk rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdk rootProject.ext.minSdkVersion
+        targetSdk rootProject.ext.targetSdkVersion
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField("String", "MY_API_KEY", tmdbApiKey)
+            buildConfigField("String", "BASE_URL", tmdbBaseUrl)
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "MY_API_KEY", tmdbApiKey)
+            buildConfigField("String", "BASE_URL", tmdbBaseUrl)
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    // app dependencies
+    implementation appDependencies.kotlin
+    implementation appDependencies.androidCore
+    implementation appDependencies.coroutinesCore
+    implementation appDependencies.coroutines
+
+    // retrofit
+    implementation appDependencies.retrofit
+    implementation appDependencies.retrofitGsonConverter
+
+    // okhttp
+    implementation appDependencies.okhttp
+    implementation appDependencies.okhttpLoggingInterceptor
+
+    // dagger
+    implementation appDependencies.dagger
+    implementation appDependencies.daggerAndroid
+    implementation appDependencies.daggerAndroidSupport
+
+    kapt kaptDependencies.daggerAndroidProcessor
+    kapt kaptDependencies.daggerCompiler
+
+    // test
+    testImplementation testDependencies.junit
+}

@@ -1,2 +1,6 @@
 rootProject.name = "MoviewApp"
 include ':app'
+include ':cache'
+include ':network'
+include ':commons'
+include ':domain'

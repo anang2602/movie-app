@@ -2,7 +2,6 @@ package com.technicalassigments.moviewapp.data.repository
 
 import com.technicalassigments.moviewapp.BuildConfig
 import com.technicalassigments.moviewapp.data.api.ApiService
-import com.technicalassigments.moviewapp.data.model.Genre
 import com.technicalassigments.moviewapp.data.model.GenreResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
