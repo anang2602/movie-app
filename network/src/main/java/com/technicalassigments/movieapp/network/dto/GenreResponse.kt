@@ -4,7 +4,7 @@ data class GenreResponse(
     var genres: List<Genre>?
 ) {
     data class Genre(
-        var id: Int?,
-        var name: String?
+        var id: Int,
+        var name: String
     )
 }

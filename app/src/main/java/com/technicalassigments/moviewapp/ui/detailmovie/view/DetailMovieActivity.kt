@@ -148,7 +148,7 @@ class DetailMovieActivity : AppCompatActivity() {
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         val sdf2 = SimpleDateFormat("dd MMM yyyy", Locale.US)
         val date = sdf.parse(dateString)
-        return sdf2.format(date)
+        return sdf2.format(date!!)
 
     }
 

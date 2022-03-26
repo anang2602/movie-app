@@ -1,11 +1,13 @@
-package com.technicalassigments.movieapp.network.dto
+package com.technicalassigments.movieapp.domain.utils
 
-import com.technicalassigments.movieapp.network.utils.getErrorMessage
+import okhttp3.ResponseBody
+import org.json.JSONObject
 import retrofit2.Response
 import java.util.regex.Pattern
 
 @Suppress("unused")
 sealed class ApiResponse<T> {
+
     companion object {
         fun <T> create(error: Throwable): ApiErrorResponse<T> {
             return ApiErrorResponse(error.message ?: "unknown error")
@@ -24,7 +26,15 @@ sealed class ApiResponse<T> {
                 }
             } else {
                 val msg = response.errorBody()
-                val errorMsg = msg?.let { getErrorMessage(it, "message") }
+                val errorMsg = msg?.let {
+                    try {
+                        val jsonObject = JSONObject(it.string())
+                        jsonObject.getString("message")
+                    } catch (e: java.lang.Exception) {
+                        e.message
+                    }
+                }
+
                 ApiErrorResponse(errorMsg ?: "unknown error")
             }
         }
@@ -55,7 +65,7 @@ data class ApiSuccessResponse<T>(
             while (matcher.find()) {
                 val count = matcher.groupCount()
                 if (count == 2) {
-                    links[matcher.group(2)] = matcher.group(1)
+                    links[matcher.group(2)!!] = matcher.group(1)!!
                 }
             }
             return links

@@ -1,19 +1,15 @@
-package com.technicalassigments.movieapp.network.utils
+package com.technicalassigments.movieapp.domain.utils
 
 import android.content.Context
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
-import com.technicalassigments.movieapp.network.dto.ApiEmptyResponse
-import com.technicalassigments.movieapp.network.dto.ApiErrorResponse
-import com.technicalassigments.movieapp.network.dto.ApiResponse
-import com.technicalassigments.movieapp.network.dto.ApiSuccessResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import java.lang.Exception
 import kotlinx.coroutines.withContext
 
 abstract class NetworkBoundResource<ResultType, RequestType>
-constructor(private val context: Context) {
+constructor(private val networkUtils: NetworkUtils) {
 
     fun asFlow() = flow {
         emit(Resource.loading(null))
@@ -21,8 +17,8 @@ constructor(private val context: Context) {
         try {
             if (shouldFetch(dbValue)) {
                 emit(Resource.loading(dbValue))
-                if (checkForInternet(context)) {
-                    when (val apiResponse = withContext(Dispatchers.IO) { fetchFromNetwork() }) {
+                if (networkUtils.checkForInternet()) {
+                    when (val apiResponse = fetchFromNetwork()) {
                         is ApiSuccessResponse -> {
                             withContext(Dispatchers.IO) {
                                 saveNetworkResult(processResponse(apiResponse))
@@ -62,7 +58,7 @@ constructor(private val context: Context) {
                 )
             })
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     protected open fun onFetchFailed() {}
 
@@ -96,7 +92,7 @@ data class Resource<out T>(val status: Status, val data: T?, val message: String
             return Resource(Status.LOADING, data, null)
         }
 
-        fun <T> offline(msg: String,data: T?): Resource<T> {
+        fun <T> offline(msg: String, data: T?): Resource<T> {
             return Resource(Status.OFFLINE, data, msg)
         }
     }

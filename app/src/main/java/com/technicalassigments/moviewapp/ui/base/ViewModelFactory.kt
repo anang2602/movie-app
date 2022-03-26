@@ -13,7 +13,7 @@ class ViewModelFactory(private val apiService: ApiService) : ViewModelProvider.F
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return MainViewModel(GenreRepository(apiService), MoviesRepository(apiService)) as T
+            return MainViewModel(MoviesRepository(apiService)) as T
         }
         if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

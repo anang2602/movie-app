@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
@@ -15,21 +14,27 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.technicalassigments.movieapp.domain.utils.Status
+import com.technicalassigments.moviewapp.MovieApp
 import com.technicalassigments.moviewapp.R
 import com.technicalassigments.moviewapp.data.api.ApiService
-import com.technicalassigments.moviewapp.data.model.GenreResult
 import com.technicalassigments.moviewapp.databinding.ActivityMainBinding
 import com.technicalassigments.moviewapp.ui.base.ViewModelFactory
 import com.technicalassigments.moviewapp.ui.main.adapter.GenreAdapter
 import com.technicalassigments.moviewapp.ui.main.adapter.MovieAdapter
 import com.technicalassigments.moviewapp.ui.main.adapter.MovieLoadStateAdapter
 import com.technicalassigments.moviewapp.ui.main.callback.GetSelectedGenre
+import com.technicalassigments.moviewapp.ui.main.di.DaggerMainComponent
+import com.technicalassigments.moviewapp.ui.main.di.MainModule
+import com.technicalassigments.moviewapp.ui.main.model.GenreMovie
+import com.technicalassigments.moviewapp.ui.main.viewmodel.DaggerMainViewModel
 import com.technicalassigments.moviewapp.ui.main.viewmodel.MainViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), GetSelectedGenre, View.OnClickListener {
 
@@ -40,16 +45,34 @@ class MainActivity : AppCompatActivity(), GetSelectedGenre, View.OnClickListener
     private var selectedGenre = ArrayList<Int>()
     private var moviesJob: Job? = null
 
+    // try dagger for genre
+    @Inject
+    lateinit var daggerViewModel: DaggerMainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+
+        // try dagger
+        initDependencyInjection()
+
         setupUI()
         initViewModel()
         initAdapter()
         fetchMovies(selectedGenre.joinToString())
+    }
+
+    private fun initDependencyInjection() {
+        DaggerMainComponent
+            .builder()
+            .networkComponent(MovieApp.networkComponent(this))
+            .cacheComponent(MovieApp.cacheComponent(this))
+            .domainComponent(MovieApp.domainComponent(this))
+            .mainModule(MainModule(this))
+            .build()
+            .inject(this)
     }
 
     private fun fetchMovies(genre: String) {
@@ -67,17 +90,28 @@ class MainActivity : AppCompatActivity(), GetSelectedGenre, View.OnClickListener
         genreAdapter = GenreAdapter(arrayListOf(), this)
         binding.rvGenre.adapter = genreAdapter
         binding.rvGenre.visibility = View.VISIBLE
-        mainViewModel.genreResult.observe(this) { result ->
-            when (result) {
-                is GenreResult.Success -> {
-                    genreAdapter.addGenres(result.data)
-                    genreAdapter.notifyDataSetChanged()
+
+        daggerViewModel.fetchGenre.observe(this) { resource ->
+            when (resource.status) {
+                Status.LOADING -> {
+
                 }
-                is GenreResult.Error -> {
-                    showError(result.error.message.toString())
+                Status.OFFLINE -> {
+
+                }
+                Status.SUCCESS -> {
+                    resource.data?.let {
+                        genreAdapter.addGenres(
+                            GenreMovie.GenreEntityToGenreMovie().mapFrom(it)
+                        )
+                    }
+                }
+                Status.ERROR -> {
+                    resource.message?.let { showError(it) }
                 }
             }
         }
+
         binding.rvMovies.adapter = movieAdapter.withLoadStateHeaderAndFooter(
             header = MovieLoadStateAdapter { movieAdapter.retry() },
             footer = MovieLoadStateAdapter { movieAdapter.retry() }

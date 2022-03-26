@@ -1,22 +1,25 @@
 package com.technicalassigments.moviewapp.ui.main.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.technicalassigments.moviewapp.data.model.Genre
+import com.technicalassigments.moviewapp.ui.main.model.GenreMovie
 import com.technicalassigments.moviewapp.databinding.ListKategoriItemBinding
 import com.technicalassigments.moviewapp.ui.main.callback.GetSelectedGenre
 import com.technicalassigments.moviewapp.ui.main.view.GenreViewHolder
 
 class GenreAdapter(
-    private val genres: ArrayList<Genre>,
+    private val genres: ArrayList<GenreMovie>,
     private val onGetSelectedGenre: GetSelectedGenre
 ) :
     RecyclerView.Adapter<GenreViewHolder>() {
 
-    fun addGenres(genre: List<Genre>) {
+    @SuppressLint("NotifyDataSetChanged")
+    fun addGenres(genre: Collection<GenreMovie>) {
         genres.clear()
         genres.addAll(genre)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenreViewHolder {
