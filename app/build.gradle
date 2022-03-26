@@ -56,6 +56,10 @@ android {
 }
 
 dependencies {
+    //implement modules
+    implementation project(':domain')
+    implementation project(':cache')
+    implementation project(':network')
 
     // app dependencies
     implementation appDependencies.kotlin

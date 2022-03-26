@@ -50,7 +50,7 @@ class DetailMovieViewHolder(private val binding: ListReviewsItemBinding) : Recyc
     private fun dateFormat(dateString: String): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
         val sdf2 = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss", Locale.US)
-        val date = sdf.parse(dateString)
+        val date = sdf.parse(dateString)!!
         return sdf2.format(date)
 
     }

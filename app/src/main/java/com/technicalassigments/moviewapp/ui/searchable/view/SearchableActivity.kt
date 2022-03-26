@@ -8,7 +8,6 @@ import android.provider.SearchRecentSuggestions
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
@@ -16,15 +15,11 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.technicalassigments.moviewapp.R
 import com.technicalassigments.moviewapp.data.api.ApiService
-import com.technicalassigments.moviewapp.data.model.GenreResult
 import com.technicalassigments.moviewapp.databinding.ActivitySearchableBinding
 import com.technicalassigments.moviewapp.ui.base.ViewModelFactory
-import com.technicalassigments.moviewapp.ui.main.adapter.GenreAdapter
 import com.technicalassigments.moviewapp.ui.main.adapter.MovieLoadStateAdapter
-import com.technicalassigments.moviewapp.ui.main.viewmodel.MainViewModel
 import com.technicalassigments.moviewapp.ui.searchable.adapter.SearchAdapter
 import com.technicalassigments.moviewapp.ui.searchable.viewmodel.SearchViewModel
 import com.technicalassigments.moviewapp.utils.RecentSuggestionsProvider
