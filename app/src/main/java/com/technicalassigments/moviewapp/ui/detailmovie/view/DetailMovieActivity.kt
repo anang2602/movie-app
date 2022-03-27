@@ -139,7 +139,7 @@ class DetailMovieActivity : AppCompatActivity() {
                             binding.videoview.settings.javaScriptEnabled = true
                             binding.videoview.loadUrl(url)
                         } catch (e: Exception) {
-                            Log.e("Error", e.localizedMessage)
+                            Log.e("Error", e.message.toString())
                         }
                     }
 
@@ -151,6 +151,7 @@ class DetailMovieActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("SetTextI18n")
     private fun setupUI() {
         movie = intent.getParcelableExtra(MOVIE)
         movie?.id?.let { detailMovieViewModel.getVideos(it) }
