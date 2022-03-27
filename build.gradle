@@ -91,7 +91,7 @@ buildscript {
                 daggerAndroidSupport    : "com.google.dagger:dagger-android-support:$daggerVersion",
 
                 // multidex
-                multidex                : "androidx.multidex:multidex:$multidexVersion"
+                multidex                : "androidx.multidex:multidex:$multidexVersion",
 
         ]
 
@@ -129,6 +129,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://jitpack.io" }
     }
 }
 

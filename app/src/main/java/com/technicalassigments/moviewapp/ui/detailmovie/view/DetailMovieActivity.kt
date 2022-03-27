@@ -1,5 +1,6 @@
 package com.technicalassigments.moviewapp.ui.detailmovie.view
 
+import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -8,41 +9,45 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.MediaController
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
+import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.technicalassigments.movieapp.domain.utils.Status
 import com.technicalassigments.moviewapp.BuildConfig
+import com.technicalassigments.moviewapp.MovieApp
 import com.technicalassigments.moviewapp.R
-import com.technicalassigments.moviewapp.data.api.ApiService
-import com.technicalassigments.moviewapp.data.model.Movie
-import com.technicalassigments.moviewapp.data.model.VideoResult
 import com.technicalassigments.moviewapp.databinding.ActivityDetailMovieBinding
-import com.technicalassigments.moviewapp.ui.base.ViewModelFactory
 import com.technicalassigments.moviewapp.ui.detailmovie.adapter.DetailMovieAdapter
+import com.technicalassigments.moviewapp.ui.detailmovie.di.DaggerDetailMovieComponent
+import com.technicalassigments.moviewapp.ui.detailmovie.di.DetailMovieModule
+import com.technicalassigments.moviewapp.ui.detailmovie.model.ReviewsUI
 import com.technicalassigments.moviewapp.ui.detailmovie.viewmodel.DetailMovieViewModel
 import com.technicalassigments.moviewapp.ui.main.adapter.MovieLoadStateAdapter
+import com.technicalassigments.moviewapp.ui.main.model.MovieUI
 import com.technicalassigments.moviewapp.ui.main.view.MovieViewHolder.Companion.MOVIE
 import com.technicalassigments.moviewapp.utils.load
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 class DetailMovieActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailMovieBinding
-    private var movie: Movie? = null
-    private lateinit var detailMovieViewModel: DetailMovieViewModel
+    private var movie: MovieUI? = null
     private var reviewsJob: Job? = null
     private val adapter = DetailMovieAdapter()
+
+    @Inject
+    lateinit var detailMovieViewModel: DetailMovieViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,22 +55,41 @@ class DetailMovieActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        initViewModel()
-        setupUi()
-        initVideosTrailer()
-        initAdapter()
+
+        onInitDependencyInjection()
+
+        setupUI()
+        initReviewRecyclerAdapter()
+        observeVideosTrailer()
+    }
+
+
+    private fun onInitDependencyInjection() {
+        DaggerDetailMovieComponent
+            .builder()
+            .networkComponent(MovieApp.networkComponent(this))
+            .domainComponent(MovieApp.domainComponent(this))
+            .cacheComponent(MovieApp.cacheComponent(this))
+            .detailMovieModule(DetailMovieModule(this))
+            .build()
+            .inject(this)
     }
 
     private fun fetchReviews(movie_id: Int) {
         reviewsJob?.cancel()
         reviewsJob = lifecycleScope.launch {
-            detailMovieViewModel.getReviews(movie_id).collect {
+            delay(50)
+            detailMovieViewModel.getReviews(movie_id).map { pagingdata ->
+                pagingdata.map {
+                    ReviewsUI.ReviewResponseToReviewUI().mapFrom(it)
+                }
+            }.collect {
                 adapter.submitData(it)
             }
         }
     }
 
-    private fun initAdapter() {
+    private fun initReviewRecyclerAdapter() {
         binding.rvReviews.layoutManager = LinearLayoutManager(this)
         binding.rvReviews.adapter = adapter.withLoadStateHeaderAndFooter(
             header = MovieLoadStateAdapter { adapter.retry() },
@@ -102,35 +126,32 @@ class DetailMovieActivity : AppCompatActivity() {
         return true
     }
 
-    private fun initVideosTrailer() {
-        detailMovieViewModel.videoResult.observe(this) { result ->
-            when (result) {
-                is VideoResult.Success -> {
-                    if (result.data.isNotEmpty()) {
-                        val url = "${BuildConfig.YOUTUBE_EMBED}${result.data[0].key}"
-                        binding.videoview.settings.javaScriptEnabled = true
-                        binding.videoview.loadUrl(url)
-                        binding.tvTrailerEmpty.visibility = View.GONE
-                    } else {
-                        binding.tvTrailerEmpty.visibility = View.VISIBLE
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun observeVideosTrailer() {
+        detailMovieViewModel.videoResult.observe(this) { resource ->
+            binding.tvTrailerEmpty.isVisible = resource.data.isNullOrEmpty()
+            when (resource.status) {
+                Status.OFFLINE -> {}
+                Status.SUCCESS -> {
+                    resource.data?.let {
+                        try {
+                            val url = "${BuildConfig.YOUTUBE_EMBED}${it.toList()[0].key}"
+                            binding.videoview.settings.javaScriptEnabled = true
+                            binding.videoview.loadUrl(url)
+                        } catch (e: Exception) {
+                            Log.e("Error", e.localizedMessage)
+                        }
                     }
 
                 }
-                is VideoResult.Error -> {
-                    Toast.makeText(this, result.error.message.toString(), Toast.LENGTH_SHORT).show()
-                }
+                Status.LOADING -> {}
+                Status.ERROR -> {}
             }
         }
     }
 
-    private fun initViewModel() {
-        detailMovieViewModel = ViewModelProviders.of(
-            this,
-            ViewModelFactory(ApiService.create())
-        ).get(DetailMovieViewModel::class.java)
-    }
 
-    private fun setupUi() {
+    private fun setupUI() {
         movie = intent.getParcelableExtra(MOVIE)
         movie?.id?.let { detailMovieViewModel.getVideos(it) }
         binding.ivPoster.load(this, "${BuildConfig.POSTER_URL}${movie?.poster_path}")

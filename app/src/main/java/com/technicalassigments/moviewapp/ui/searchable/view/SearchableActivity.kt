@@ -12,27 +12,34 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
+import androidx.paging.map
+import com.technicalassigments.moviewapp.MovieApp
 import com.technicalassigments.moviewapp.R
-import com.technicalassigments.moviewapp.data.api.ApiService
 import com.technicalassigments.moviewapp.databinding.ActivitySearchableBinding
-import com.technicalassigments.moviewapp.ui.base.ViewModelFactory
 import com.technicalassigments.moviewapp.ui.main.adapter.MovieLoadStateAdapter
+import com.technicalassigments.moviewapp.ui.main.model.MovieUI
 import com.technicalassigments.moviewapp.ui.searchable.adapter.SearchAdapter
+import com.technicalassigments.moviewapp.ui.searchable.di.DaggerSearchableComponent
+import com.technicalassigments.moviewapp.ui.searchable.di.SearchableModule
 import com.technicalassigments.moviewapp.ui.searchable.viewmodel.SearchViewModel
 import com.technicalassigments.moviewapp.utils.RecentSuggestionsProvider
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class SearchableActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchableBinding
-    private lateinit var searchViewModel: SearchViewModel
     private var searchAdapter = SearchAdapter()
     private var searchJob: Job? = null
+
+    @Inject
+    lateinit var searchViewModel: SearchViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,12 +47,25 @@ class SearchableActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        initViewModel()
+
+        onInitDependencyInjection()
+
         handleIntent(intent)
-        initAdapter()
+        initRecyclerAdapter()
     }
 
-    private fun initAdapter() {
+    private fun onInitDependencyInjection() {
+        DaggerSearchableComponent
+            .builder()
+            .networkComponent(MovieApp.networkComponent(this))
+            .cacheComponent(MovieApp.cacheComponent(this))
+            .domainComponent(MovieApp.domainComponent(this))
+            .searchableModule(SearchableModule(this))
+            .build()
+            .inject(this)
+    }
+
+    private fun initRecyclerAdapter() {
 
         binding.rvMovies.adapter = searchAdapter.withLoadStateHeaderAndFooter(
             header = MovieLoadStateAdapter { searchAdapter.retry() },
@@ -71,16 +91,13 @@ class SearchableActivity : AppCompatActivity() {
     }
 
 
-    private fun initViewModel() {
-        searchViewModel = ViewModelProviders.of(
-            this,
-            ViewModelFactory(ApiService.create())
-        ).get(SearchViewModel::class.java)
-    }
-
     private fun searchMovie(query: String) {
+        searchJob?.cancel()
         searchJob = lifecycleScope.launch {
-            searchViewModel.getMovies(query).collect {
+            delay(50)
+            searchViewModel.getMovies(query).map { pagingdata ->
+                pagingdata.map { MovieUI.MovieResponseToMovie().mapFrom(it) }
+            }.collect {
                 searchAdapter.submitData(it)
             }
         }
@@ -134,7 +151,11 @@ class SearchableActivity : AppCompatActivity() {
     private fun handleIntent(intent: Intent) {
         if (Intent.ACTION_SEARCH == intent.action) {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
-                SearchRecentSuggestions(this, RecentSuggestionsProvider.AUTHORITY, RecentSuggestionsProvider.MODE)
+                SearchRecentSuggestions(
+                    this,
+                    RecentSuggestionsProvider.AUTHORITY,
+                    RecentSuggestionsProvider.MODE
+                )
                     .saveRecentQuery(query, null)
                 supportActionBar?.title = query
                 searchMovie(query)
@@ -144,9 +165,9 @@ class SearchableActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-           android.R.id.home -> {
-               finish()
-           }
+            android.R.id.home -> {
+                finish()
+            }
         }
         return super.onOptionsItemSelected(item)
     }

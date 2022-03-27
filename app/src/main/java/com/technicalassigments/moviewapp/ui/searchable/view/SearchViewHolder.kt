@@ -5,15 +5,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.technicalassigments.moviewapp.BuildConfig
-import com.technicalassigments.moviewapp.data.model.Movie
 import com.technicalassigments.moviewapp.databinding.ListMoviesItemBinding
 import com.technicalassigments.moviewapp.ui.detailmovie.view.DetailMovieActivity
+import com.technicalassigments.moviewapp.ui.main.model.MovieUI
 import com.technicalassigments.moviewapp.ui.main.view.MovieViewHolder
 import com.technicalassigments.moviewapp.utils.load
 
 class SearchViewHolder(private val binding: ListMoviesItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(movie: Movie) {
+    fun bind(movie: MovieUI) {
         binding.tvTitle.text = movie.original_title
         binding.ivPoster.load(itemView.context, "${BuildConfig.POSTER_URL}${movie.poster_path}")
 
