@@ -4,21 +4,21 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.technicalassigments.moviewapp.ui.main.model.GenreMovie
+import com.technicalassigments.moviewapp.ui.main.model.GenreMovieUI
 import com.technicalassigments.moviewapp.databinding.ListKategoriItemBinding
 import com.technicalassigments.moviewapp.ui.main.callback.GetSelectedGenre
 import com.technicalassigments.moviewapp.ui.main.view.GenreViewHolder
 
 class GenreAdapter(
-    private val genres: ArrayList<GenreMovie>,
+    private val genreUIS: ArrayList<GenreMovieUI>,
     private val onGetSelectedGenre: GetSelectedGenre
 ) :
     RecyclerView.Adapter<GenreViewHolder>() {
 
     @SuppressLint("NotifyDataSetChanged")
-    fun addGenres(genre: Collection<GenreMovie>) {
-        genres.clear()
-        genres.addAll(genre)
+    fun addGenres(genreUI: Collection<GenreMovieUI>) {
+        genreUIS.clear()
+        genreUIS.addAll(genreUI)
         notifyDataSetChanged()
     }
 
@@ -29,7 +29,7 @@ class GenreAdapter(
     }
 
     override fun onBindViewHolder(holder: GenreViewHolder, position: Int) =
-        holder.onBind(genres[position], onGetSelectedGenre)
+        holder.onBind(genreUIS[position], onGetSelectedGenre)
 
-    override fun getItemCount() = genres.size
+    override fun getItemCount() = genreUIS.size
 }

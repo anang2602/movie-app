@@ -1,4 +1,4 @@
-package com.technicalassigments.moviewapp.ui.main.viewmodel
+package com.technicalassigments.moviewapp.utils
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel

@@ -1,4 +1,4 @@
-package com.technicalassigments.movieapp.domain.repository
+package com.technicalassigments.movieapp.domain.repository.genre
 
 import com.technicalassigments.movieapp.cache.database.dao.GenreDao
 import com.technicalassigments.movieapp.cache.entity.GenreEntity
@@ -22,6 +22,7 @@ class GenreRepository(
     override suspend fun fetchGenreMovie(): Flow<Resource<Collection<GenreEntity>>> {
         return object : NetworkBoundResource<Collection<GenreEntity>, GenreResponse>(networkUtils) {
             override suspend fun saveNetworkResult(item: GenreResponse) {
+                genreDao.clearGenres()
                 genreDao.insertGenres(
                     GenreToEntityMapper().mapFrom(response = item)
                 )

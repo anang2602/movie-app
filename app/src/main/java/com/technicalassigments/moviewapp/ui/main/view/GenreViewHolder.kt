@@ -2,7 +2,7 @@ package com.technicalassigments.moviewapp.ui.main.view
 
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.technicalassigments.moviewapp.ui.main.model.GenreMovie
+import com.technicalassigments.moviewapp.ui.main.model.GenreMovieUI
 import com.technicalassigments.moviewapp.R
 import com.technicalassigments.moviewapp.databinding.ListKategoriItemBinding
 import com.technicalassigments.moviewapp.ui.main.callback.GetSelectedGenre
@@ -10,9 +10,9 @@ import com.technicalassigments.moviewapp.ui.main.callback.GetSelectedGenre
 class GenreViewHolder(private val binding: ListKategoriItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
     private val selectedGenre = arrayListOf<Int>()
-    fun onBind(genre: GenreMovie, onGetSelectedGenre: GetSelectedGenre) {
-        binding.tvGenre.text = genre.name
-        if (genre.id in selectedGenre) {
+    fun onBind(genreUI: GenreMovieUI, onGetSelectedGenre: GetSelectedGenre) {
+        binding.tvGenre.text = genreUI.name
+        if (genreUI.id in selectedGenre) {
             binding.llGenre.setBackgroundColor(
                 ContextCompat.getColor(itemView.context, R.color.white)
             )
@@ -22,25 +22,25 @@ class GenreViewHolder(private val binding: ListKategoriItemBinding) :
             )
         }
         itemView.setOnClickListener {
-            onClickGenre(genre, onGetSelectedGenre)
+            onClickGenre(genreUI, onGetSelectedGenre)
         }
     }
 
-    private fun onClickGenre(genre: GenreMovie, onGetSelectedGenre: GetSelectedGenre) {
-        if (genre.id in selectedGenre) {
-            selectedGenre.remove(genre.id)
+    private fun onClickGenre(genreUI: GenreMovieUI, onGetSelectedGenre: GetSelectedGenre) {
+        if (genreUI.id in selectedGenre) {
+            selectedGenre.remove(genreUI.id)
             binding.llGenre.setBackgroundColor(
                 ContextCompat.getColor(itemView.context, R.color.onsurface)
             )
-            genre.id.let { id ->
+            genreUI.id.let { id ->
                 onGetSelectedGenre.onGetSelectedGenre(id)
             }
         } else {
-            genre.id.let { it1 -> selectedGenre.add(it1) }
+            genreUI.id.let { it1 -> selectedGenre.add(it1) }
             binding.llGenre.setBackgroundColor(
                 ContextCompat.getColor(itemView.context, R.color.white)
             )
-            genre.id.let { id ->
+            genreUI.id.let { id ->
                 onGetSelectedGenre.onGetSelectedGenre(id)
             }
         }
