@@ -56,4 +56,8 @@ dependencies {
 
     // test
     testImplementation testDependencies.junit
+    testImplementation testDependencies.mockk
+    testImplementation testDependencies.coroutinesTest
+    testImplementation testDependencies.coroutinesCoreTest
+    testImplementation testDependencies.truth
 }

@@ -29,6 +29,9 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    testOptions {
+        unitTests.includeAndroidResources = true
+    }
 }
 
 dependencies {
@@ -59,4 +62,14 @@ dependencies {
 
     // test
     testImplementation testDependencies.junit
+    testImplementation testDependencies.mockk
+    testImplementation testDependencies.coroutinesTest
+    testImplementation testDependencies.coroutinesCoreTest
+    testImplementation testDependencies.truth
+    testImplementation testDependencies.coreTesting
+    testImplementation androidTestDependencies.androidTestCore
+
+    // android test
+    androidTestImplementation androidTestDependencies.androidJunit
+    androidTestImplementation androidTestDependencies.espresso
 }

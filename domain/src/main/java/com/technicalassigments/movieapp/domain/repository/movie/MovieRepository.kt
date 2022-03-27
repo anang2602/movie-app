@@ -16,7 +16,7 @@ class MovieRepository(
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
-                enablePlaceholders = true
+                enablePlaceholders = false
             ),
             pagingSourceFactory = { MoviesPagingSource(movieServices, genre = genre) }
         ).flow
@@ -26,7 +26,7 @@ class MovieRepository(
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
-                enablePlaceholders = true
+                enablePlaceholders = false
             ),
             pagingSourceFactory = { MoviesPagingSource(movieServices, query = query) }
         ).flow

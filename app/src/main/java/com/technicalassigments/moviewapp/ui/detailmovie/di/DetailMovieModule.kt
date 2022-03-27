@@ -13,6 +13,7 @@ import com.technicalassigments.moviewapp.ui.detailmovie.viewmodel.DetailMovieVie
 import com.technicalassigments.moviewapp.utils.viewModel
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.Dispatchers
 
 @Module
 class DetailMovieModule(
@@ -24,7 +25,7 @@ class DetailMovieModule(
     fun provideVideoRepository(
         networkUtils: NetworkUtils,
         videoService: VideoService
-    ) = VideosRepository(networkUtils, videoService)
+    ) = VideosRepository(networkUtils, videoService, Dispatchers.IO)
 
     @Provides
     @FeatureScope

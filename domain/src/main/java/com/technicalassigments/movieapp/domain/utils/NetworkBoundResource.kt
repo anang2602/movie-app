@@ -1,19 +1,21 @@
 package com.technicalassigments.movieapp.domain.utils
 
-import android.content.Context
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import java.lang.Exception
-import kotlinx.coroutines.withContext
 
 abstract class NetworkBoundResource<ResultType, RequestType>
-constructor(private val networkUtils: NetworkUtils) {
+constructor(
+    private val networkUtils: NetworkUtils,
+    private val dispatcher: CoroutineDispatcher
+) {
 
     fun asFlow() = flow {
         emit(Resource.loading(null))
-        val dbValue = loadFromDb().first()
+        val dbValue = loadFromDb().firstOrNull()
         try {
             if (shouldFetch(dbValue)) {
                 emit(Resource.loading(dbValue))
@@ -56,7 +58,7 @@ constructor(private val networkUtils: NetworkUtils) {
                 )
             })
         }
-    }.flowOn(Dispatchers.IO)
+    }.flowOn(dispatcher)
 
     protected open fun onFetchFailed() {}
 

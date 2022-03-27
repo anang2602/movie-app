@@ -1,6 +1,6 @@
 package com.technicalassigments.movieapp.domain.repository.genre
 
-import com.technicalassigments.movieapp.cache.database.dao.GenreDao
+import com.technicalassigments.movieapp.cache.dao.GenreDao
 import com.technicalassigments.movieapp.cache.entity.GenreEntity
 import com.technicalassigments.movieapp.domain.mapper.GenreToEntityMapper
 import com.technicalassigments.movieapp.domain.usecase.FetchGenreUseCase
@@ -10,17 +10,22 @@ import com.technicalassigments.movieapp.domain.utils.NetworkUtils
 import com.technicalassigments.movieapp.domain.utils.Resource
 import com.technicalassigments.movieapp.network.dto.GenreResponse
 import com.technicalassigments.movieapp.network.services.GenreServices
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import java.lang.Exception
 
 class GenreRepository(
     private val networkUtils: NetworkUtils,
     private val genreServices: GenreServices,
-    private val genreDao: GenreDao
+    private val genreDao: GenreDao,
+    private val dispatcher: CoroutineDispatcher
 ) : FetchGenreUseCase {
 
     override suspend fun fetchGenreMovie(): Flow<Resource<Collection<GenreEntity>>> {
-        return object : NetworkBoundResource<Collection<GenreEntity>, GenreResponse>(networkUtils) {
+        return object : NetworkBoundResource<Collection<GenreEntity>, GenreResponse>(
+            networkUtils,
+            dispatcher
+        ) {
             override suspend fun saveNetworkResult(item: GenreResponse) {
                 genreDao.clearGenres()
                 genreDao.insertGenres(

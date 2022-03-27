@@ -7,6 +7,7 @@ import com.technicalassigments.movieapp.domain.utils.NetworkUtils
 import com.technicalassigments.movieapp.domain.utils.Resource
 import com.technicalassigments.movieapp.network.dto.VideoResponse
 import com.technicalassigments.movieapp.network.services.VideoService
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,7 +17,8 @@ import java.io.IOException
 
 class VideosRepository(
     private val networkUtils: NetworkUtils,
-    private val videoService: VideoService
+    private val videoService: VideoService,
+    private val coroutineDispatcher: CoroutineDispatcher
 ) : FetchVideoUseCase {
 
     override suspend fun fetchVideoById(movieId: Int): Flow<Resource<Collection<VideoResponse.Video>>> {
@@ -39,6 +41,6 @@ class VideosRepository(
             } else {
                 emit(Resource.offline("Sedang offline", null))
             }
-        }.flowOn(Dispatchers.IO)
+        }.flowOn(coroutineDispatcher)
     }
 }

@@ -1,4 +1,4 @@
-package com.technicalassigments.movieapp.cache.database.dao
+package com.technicalassigments.movieapp.cache.dao
 
 import androidx.room.Dao
 import androidx.room.Insert

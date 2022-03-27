@@ -21,4 +21,10 @@ class ExampleInstrumentedTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.technicalassigments.moviewapp", appContext.packageName)
     }
+
+    @Test
+    fun cobaTest() {
+        assertEquals(1, 1)
+    }
+
 }
