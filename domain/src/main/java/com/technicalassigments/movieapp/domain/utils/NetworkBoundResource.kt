@@ -20,9 +20,7 @@ constructor(private val networkUtils: NetworkUtils) {
                 if (networkUtils.checkForInternet()) {
                     when (val apiResponse = fetchFromNetwork()) {
                         is ApiSuccessResponse -> {
-                            withContext(Dispatchers.IO) {
-                                saveNetworkResult(processResponse(apiResponse))
-                            }
+                            saveNetworkResult(processResponse(apiResponse))
                             emitAll(loadFromDb().map { Resource.success(it) })
                         }
                         is ApiErrorResponse -> {

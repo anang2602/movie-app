@@ -43,6 +43,9 @@ dependencies {
     // retrofit
     implementation appDependencies.retrofit
 
+    //Paging
+    implementation appDependencies.paging
+
     // dagger
     implementation appDependencies.dagger
     implementation appDependencies.daggerAndroid

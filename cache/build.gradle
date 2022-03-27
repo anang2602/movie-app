@@ -43,6 +43,9 @@ dependencies {
     implementation appDependencies.roomRuntime
     implementation appDependencies.roomKtx
 
+    //Paging
+    implementation appDependencies.paging
+
     // dagger
     implementation appDependencies.dagger
     implementation appDependencies.daggerAndroid
