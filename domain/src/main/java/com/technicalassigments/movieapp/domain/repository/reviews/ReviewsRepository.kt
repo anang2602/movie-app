@@ -14,7 +14,7 @@ class ReviewsRepository(private val apiService: ReviewsService) : FetchReviewsUs
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
-                enablePlaceholders = true
+                enablePlaceholders = false
             ),
             pagingSourceFactory = { ReviewsPagingSource(apiService, movieId) }
         ).flow

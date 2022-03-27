@@ -1,20 +1,11 @@
 package com.technicalassigments.moviewapp.ui.detailmovie.view
 
-import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.ms.square.android.expandabletextview.ExpandableTextView
-import com.technicalassigments.moviewapp.BuildConfig
 import com.technicalassigments.moviewapp.R
-import com.technicalassigments.moviewapp.data.model.Movie
-import com.technicalassigments.moviewapp.data.model.Reviews
-import com.technicalassigments.moviewapp.databinding.ListMoviesItemBinding
 import com.technicalassigments.moviewapp.databinding.ListReviewsItemBinding
-import com.technicalassigments.moviewapp.ui.detailmovie.view.DetailMovieActivity
-import com.technicalassigments.moviewapp.utils.load
+import com.technicalassigments.moviewapp.ui.detailmovie.model.ReviewsUI
 import com.technicalassigments.moviewapp.utils.loadAvatar
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,7 +14,7 @@ class DetailMovieViewHolder(private val binding: ListReviewsItemBinding) : Recyc
 
     private var isExpand = false
 
-    fun bind(reviews: Reviews) {
+    fun bind(reviews: ReviewsUI) {
         binding.tvContent.text = reviews.content
         binding.tvUsername.text = reviews.author
         binding.tvCreated.text = dateFormat(reviews.created_at.toString())

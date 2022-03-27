@@ -26,12 +26,9 @@ android {
 
     // initialize your own secrets, API key etc. in the gradle.properties
     buildTypes {
-        /* TODO url to be removed later */
         debug {
             debuggable true
             minifyEnabled false
-            buildConfigField("String", "MY_API_KEY", tmdbApiKey)
-            buildConfigField("String", "BASE_URL", tmdbBaseUrl)
             buildConfigField("String", "POSTER_URL", tmdbImgUrl)
             buildConfigField("String", "YOUTUBE_EMBED", youtubeEmbed)
         }
@@ -40,8 +37,6 @@ android {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField("String", "MY_API_KEY", tmdbApiKey)
-            buildConfigField("String", "BASE_URL", tmdbBaseUrl)
             buildConfigField("String", "POSTER_URL", tmdbImgUrl)
             buildConfigField("String", "YOUTUBE_EMBED", youtubeEmbed)
         }
@@ -80,7 +75,7 @@ dependencies {
     implementation appDependencies.expandableTextview
     implementation appDependencies.swipeRefreshLayout
 
-    //Paging
+    // Paging
     implementation appDependencies.paging
 
     // dagger
@@ -93,17 +88,14 @@ dependencies {
 
     // test
     testImplementation testDependencies.junit
+    testImplementation testDependencies.mockk
+    testImplementation testDependencies.coroutinesTest
+    testImplementation testDependencies.coroutinesCoreTest
+    testImplementation testDependencies.truth
+    testImplementation testDependencies.coreTesting
 
     // android test
     androidTestImplementation androidTestDependencies.androidJunit
     androidTestImplementation androidTestDependencies.espresso
 
-    /* TODO remove this later*/
-    // retrofit
-    implementation appDependencies.retrofit
-    implementation appDependencies.retrofitGsonConverter
-
-    // okhttp
-    implementation appDependencies.okhttp
-    implementation appDependencies.okhttpLoggingInterceptor
 }

@@ -3,14 +3,10 @@ package com.technicalassigments.moviewapp.ui.detailmovie.adapter
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import com.technicalassigments.moviewapp.data.model.Movie
-import com.technicalassigments.moviewapp.data.model.Reviews
+import com.technicalassigments.moviewapp.ui.detailmovie.model.ReviewsUI
 import com.technicalassigments.moviewapp.ui.detailmovie.view.DetailMovieViewHolder
-import com.technicalassigments.moviewapp.ui.detailmovie.viewmodel.DetailMovieViewModel
-import com.technicalassigments.moviewapp.ui.main.view.MovieViewHolder
 
-class DetailMovieAdapter : PagingDataAdapter<Reviews, DetailMovieViewHolder>(MOVIE_COMPARATOR) {
+class DetailMovieAdapter : PagingDataAdapter<ReviewsUI, DetailMovieViewHolder>(MOVIE_COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailMovieViewHolder {
         return DetailMovieViewHolder.create(parent)
@@ -24,11 +20,11 @@ class DetailMovieAdapter : PagingDataAdapter<Reviews, DetailMovieViewHolder>(MOV
     }
 
     companion object {
-        private val MOVIE_COMPARATOR = object : DiffUtil.ItemCallback<Reviews>() {
-            override fun areItemsTheSame(oldItem: Reviews, newItem: Reviews): Boolean =
+        private val MOVIE_COMPARATOR = object : DiffUtil.ItemCallback<ReviewsUI>() {
+            override fun areItemsTheSame(oldItem: ReviewsUI, newItem: ReviewsUI): Boolean =
                 oldItem == newItem
 
-            override fun areContentsTheSame(oldItem: Reviews, newItem: Reviews): Boolean =
+            override fun areContentsTheSame(oldItem: ReviewsUI, newItem: ReviewsUI): Boolean =
                 oldItem == newItem
         }
     }

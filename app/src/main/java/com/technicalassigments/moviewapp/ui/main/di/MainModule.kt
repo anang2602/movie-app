@@ -1,6 +1,6 @@
 package com.technicalassigments.moviewapp.ui.main.di
 
-import com.technicalassigments.movieapp.cache.database.dao.GenreDao
+import com.technicalassigments.movieapp.cache.dao.GenreDao
 import com.technicalassigments.moviewapp.utils.viewModel
 import com.technicalassigments.movieapp.domain.repository.genre.GenreRepository
 import com.technicalassigments.movieapp.domain.repository.movie.MovieRepository
@@ -14,6 +14,7 @@ import com.technicalassigments.moviewapp.ui.main.view.MainActivity
 import com.technicalassigments.moviewapp.ui.main.viewmodel.MainViewModel
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.Dispatchers
 
 @Module
 class MainModule(
@@ -26,7 +27,7 @@ class MainModule(
         networkUtils: NetworkUtils,
         genreServices: GenreServices,
         genreDao: GenreDao
-    ) = GenreRepository(networkUtils, genreServices, genreDao)
+    ) = GenreRepository(networkUtils, genreServices, genreDao, Dispatchers.IO)
 
     @Provides
     @FeatureScope

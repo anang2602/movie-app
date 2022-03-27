@@ -14,7 +14,8 @@ data class MovieUI(
     var poster_path: String?,
     var release_date: String?,
     var title: String?,
-    var vote_average: Double?
+    var vote_average: Double?,
+    var vote_count: Int?
 ) : Parcelable {
 
     internal class MovieResponseToMovie : Mapper<MovieResponse.Movie, MovieUI> {
@@ -27,7 +28,8 @@ data class MovieUI(
                 poster_path = response.poster_path,
                 release_date = response.release_date,
                 title = response.title,
-                vote_average = response.vote_average
+                vote_average = response.vote_average,
+                vote_count = response.vote_count
             )
 
         }

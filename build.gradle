@@ -44,10 +44,14 @@ buildscript {
 
         // test
         junitVersion = "4.13.2"
+        mockkVersion = "1.12.3"
+        truthVersion = "1.1.3"
+        coreTestingVersion = "2.1.0"
 
         // android test
         androidJunitVersion = "1.1.3"
         espresso = "3.4.0"
+        androidTestCoreVersion = "1.4.0"
 
         // multidex
         multidexVersion = "2.0.1"
@@ -91,7 +95,7 @@ buildscript {
                 daggerAndroidSupport    : "com.google.dagger:dagger-android-support:$daggerVersion",
 
                 // multidex
-                multidex                : "androidx.multidex:multidex:$multidexVersion"
+                multidex                : "androidx.multidex:multidex:$multidexVersion",
 
         ]
 
@@ -102,13 +106,19 @@ buildscript {
         ]
 
         testDependencies = [
-                junit       : "junit:junit:$junitVersion",
-                retrofitMock: "com.squareup.retrofit2:retrofit-mock:$retrofitVersion"
+                junit             : "junit:junit:$junitVersion",
+                retrofitMock      : "com.squareup.retrofit2:retrofit-mock:$retrofitVersion",
+                mockk             : "io.mockk:mockk:$mockkVersion",
+                coroutinesCoreTest: "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
+                coroutinesTest    : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion",
+                truth             : "com.google.truth:truth:$truthVersion",
+                coreTesting       : "androidx.arch.core:core-testing:$coreTestingVersion"
         ]
 
         androidTestDependencies = [
-                androidJunit: "androidx.test.ext:junit:$androidJunitVersion",
-                espresso    : "androidx.test.espresso:espresso-core:$espresso"
+                androidJunit   : "androidx.test.ext:junit:$androidJunitVersion",
+                espresso       : "androidx.test.espresso:espresso-core:$espresso",
+                androidTestCore: "androidx.test:core-ktx:$androidTestCoreVersion"
         ]
     }
 
@@ -129,6 +139,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://jitpack.io" }
     }
 }
 
