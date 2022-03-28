@@ -6,6 +6,7 @@ import androidx.paging.cachedIn
 import com.technicalassigments.movieapp.domain.usecase.FetchReviewsUseCaseImpl
 import com.technicalassigments.movieapp.domain.usecase.FetchVideoUseCaseImpl
 import com.technicalassigments.movieapp.network.dto.ReviewsResponse
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
