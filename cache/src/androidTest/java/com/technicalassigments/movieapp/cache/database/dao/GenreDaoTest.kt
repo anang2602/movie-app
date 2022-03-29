@@ -6,6 +6,8 @@ import com.technicalassigments.movieapp.cache.TestCoroutineRule
 import com.technicalassigments.movieapp.cache.database.MovieDatabaseTest
 import com.technicalassigments.movieapp.cache.entity.GenreEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.count
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -22,11 +24,11 @@ open class GenreDaoTest: MovieDatabaseTest() {
     val testCoroutineRule = TestCoroutineRule()
 
     @Test
-    fun insertGenreTest()  {
+    fun insertGenreTest() = testCoroutineRule.runBlockingTest  {
         val genreEntity = listOf(GenreEntity(1, "fake name"))
         appDatabase.genreDao().insertGenres(genreEntity)
-        val genreSize = appDatabase.genreDao().fetchGenreMovie()
-        Assert.assertEquals(1, 1)
+        val result = appDatabase.genreDao().fetchGenreMovie()
+        Assert.assertEquals(1, result.collect { it.size })
     }
 
 
