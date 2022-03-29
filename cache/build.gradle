@@ -32,6 +32,14 @@ android {
     testOptions {
         unitTests.includeAndroidResources = true
     }
+
+    // Test Logging
+    tasks.withType(Test) {
+        testLogging {
+            events "standardOut", "started", "passed", "skipped", "failed"
+        }
+    }
+
 }
 
 dependencies {
